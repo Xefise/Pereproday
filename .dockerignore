@@ -1,0 +1,93 @@
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/.idea
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/azds.yaml
+**/bin
+**/charts
+**/docker-compose*
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+LICENSE
+README.md
+
+# Logs
+**/[Ll]og
+**/[Ll]ogs
+**/*.log
+
+# SQL Server files
+**/*.mdf
+**/*.ldf
+**/*.ndf
+
+# Certificates
+**/*.pfx
+
+# .NET / NuGet
+**/artifacts
+**/*.nupkg
+**/*.snupkg
+**/*.binlog
+**/publish
+
+# Debug symbols
+**/*.pdb
+
+# Test results & coverage
+**/[Tt]est[Rr]esult*
+**/coverage*.*
+
+# ReSharper
+**/_ReSharper*
+**/*.DotSettings.user
+
+# AI Agents & Assistants
+**/.claude
+**/CLAUDE.md
+**/claude.md
+**/.cursor
+**/.cursorignore
+**/.cursorindexingignore
+**/.cursorrules
+**/.copilot
+**/.windsurf
+**/.codeium
+**/.windsurfrules
+**/.aider*
+**/.cline
+**/.clinerules
+**/.clineignore
+**/.roo
+**/.rooignore
+**/.roorules*
+**/.continue
+**/.continuerc.json
+**/.continuerules
+**/.junie
+**/.amazonq
+**/.codewhisperer
+**/.tabnine_root
+**/.augment
+**/.augmentignore
+**/.cody
+**/.devin
+**/.openhands
+**/.bolt
+**/.lovable
+**/.v0
+**/.prompts
+**/.ai

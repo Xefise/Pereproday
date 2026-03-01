@@ -1,0 +1,203 @@
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Mono auto generated files
+mono_crash.*
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# Code coverage
+*.dotCover
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+# Benchmark
+BenchmarkDotNet.Artifacts/
+
+# .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# MSBuild
+*.binlog
+
+# Publish output
+*.[Pp]ublish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
+PublishScripts/
+publish/
+
+# Azure
+csx/
+*.build.csdef
+ecf/
+rcf/
+
+# Cache files
+*.[Cc]ache
+!?*.[Cc]ache/
+
+# SQL Server files
+*.mdf
+*.ldf
+*.ndf
+
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+
+# Other
+ClientBin/
+~$*
+*~
+*.dbmdl
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+FakesAssemblies/
+MigrationBackup/
+healthchecksdb
+.localhistory/
+FodyWeavers.xsd
+
+# IDEs and editors
+.vs/
+.idea/
+.ionide/
+.mfractor/
+.cr/personal
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+.claude/
+CLAUDE.md
+claude.md
+.cursor/
+.cursorignore
+.cursorindexingignore
+.cursorrules
+.copilot/
+.github/copilot-instructions.md
+.windsurf/
+.codeium/
+.windsurfrules
+.aider*
+.cline/
+.clinerules
+.clineignore
+.roo/
+.rooignore
+.roorules*
+.continue/
+.continuerc.json
+.continuerules
+.junie/
+.amazonq/
+.codewhisperer/
+.tabnine_root
+.augment/
+.augmentignore
+.cody/
+.devin/
+.openhands/
+.bolt/
+.lovable/
+.v0/
+.replit
+replit.nix
+.prompts/
+.ai/
+
+# Visual Studio
+Generated\ Files/
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Other
+*.[Ll]ocal
