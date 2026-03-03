@@ -3,9 +3,10 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pereprodai.Catalog.Application.Behaviors;
 using Pereprodai.Catalog.Domain.Repositories;
 using Pereprodai.Catalog.Infrastructure;
+using Pereprodai.Shared.Application.Behaviors;
+using Pereprodai.Shared.Infrastructure;
 
 namespace Pereprodai.Catalog;
 

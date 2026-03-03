@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
 
-namespace Pereprodai.Catalog.Application.Behaviors;
+namespace Pereprodai.Shared.Application.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull

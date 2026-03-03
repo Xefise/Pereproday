@@ -1,4 +1,4 @@
-namespace Pereprodai.Catalog.Application.DTOs;
+namespace Pereprodai.Shared.Application.DTOs;
 
 public record PagedResponse<T>(
     List<T> Items,

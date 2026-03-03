@@ -1,4 +1,5 @@
 using Pereprodai.Catalog.Domain.Enums;
+using Pereprodai.Shared.Domain.Enums;
 
 namespace Pereprodai.Catalog.Application.DTOs;
 

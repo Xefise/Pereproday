@@ -1,4 +1,4 @@
-using Pereprodai.Catalog.Domain.Enums;
+using Pereprodai.Shared.Domain.Enums;
 using Pereprodai.Shared.Application;
 
 namespace Pereprodai.Catalog.Application.Commands.CreateAd;

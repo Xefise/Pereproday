@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Pereprodai.Catalog.Domain.Enums;
 using Pereprodai.Catalog.Domain.ValueObjects;
+using Pereprodai.Shared.Domain.Enums;
 
 namespace Pereprodai.Catalog.UnitTests.Domain;
 

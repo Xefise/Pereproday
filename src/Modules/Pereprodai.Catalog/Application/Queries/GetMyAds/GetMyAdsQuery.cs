@@ -1,6 +1,7 @@
 using Pereprodai.Catalog.Application.DTOs;
 using Pereprodai.Catalog.Domain.Enums;
 using Pereprodai.Shared.Application;
+using Pereprodai.Shared.Application.DTOs;
 
 namespace Pereprodai.Catalog.Application.Queries.GetMyAds;
 

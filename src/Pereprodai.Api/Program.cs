@@ -1,6 +1,8 @@
 using Pereprodai.Api.Middleware;
 using Pereprodai.Catalog;
 using Pereprodai.Catalog.Infrastructure;
+using Pereprodai.Moderation;
+using Pereprodai.Moderation.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Modules
 builder.Services.AddCatalogModule(builder.Configuration);
+builder.Services.AddModerationModule(builder.Configuration);
 
 // Redis
 builder.Services.AddStackExchangeRedisCache(options =>

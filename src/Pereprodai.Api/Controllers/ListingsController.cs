@@ -10,6 +10,7 @@ using Pereprodai.Catalog.Application.DTOs;
 using Pereprodai.Catalog.Application.Queries.GetAd;
 using Pereprodai.Catalog.Application.Queries.GetMyAds;
 using Pereprodai.Catalog.Domain.Enums;
+using Pereprodai.Shared.Application.DTOs;
 
 namespace Pereprodai.Api.Controllers;
 

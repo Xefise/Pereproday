@@ -1,7 +1,8 @@
 using Pereprodai.Catalog.Domain.Enums;
-using Pereprodai.Catalog.Domain.Events;
 using Pereprodai.Catalog.Domain.ValueObjects;
 using Pereprodai.Shared.Domain;
+using Pereprodai.Shared.Domain.Events.Catalog;
+using Pereprodai.Shared.Domain.Events.Catalog.Snapshots;
 
 namespace Pereprodai.Catalog.Domain.Entities;
 
@@ -19,6 +20,11 @@ public class Ad : AggregateRoot
     public DateTime UpdatedAt { get; private set; }
 
     private Ad() { } // EF Core
+
+    public AdSnapshot ToSnapshot() => new(
+        Id, UserId, Title, Description, Category,
+        Price.Amount, Price.Currency,
+        Location.City, ContactInfo.Phone, ContactInfo.Email);
 
     public static Ad Create(
         Guid userId,
@@ -57,9 +63,9 @@ public class Ad : AggregateRoot
         Location location,
         ContactInfo contactInfo)
     {
-        var allowedStatuses = new[] { AdStatus.Draft, AdStatus.OnModeration, AdStatus.Published };
+        var allowedStatuses = new[] { AdStatus.Draft, AdStatus.OnModeration, AdStatus.Published, AdStatus.Rejected };
         if(!allowedStatuses.Contains(Status))
-            throw new InvalidOperationException("Can't update an ad that is not in Draft, OnModeration or Published status.");
+            throw new InvalidOperationException("Can't update an ad that is not in Draft, OnModeration, Rejected or Published status.");
 
         Title = title;
         Description = description;
@@ -69,9 +75,13 @@ public class Ad : AggregateRoot
         ContactInfo = contactInfo;
         UpdatedAt = DateTime.UtcNow;
 
-        if(Status is AdStatus.Published or AdStatus.OnModeration) Status = AdStatus.OnModeration;
+        if(Status is AdStatus.Published or AdStatus.OnModeration or AdStatus.Rejected)
+        {
+            if(Status != AdStatus.OnModeration) RaiseDomainEvent(new AdSubmittedForModerationEvent(ToSnapshot()));
+            Status = AdStatus.OnModeration;
+        }
 
-        RaiseDomainEvent(new AdUpdatedEvent(Id));
+        RaiseDomainEvent(new AdUpdatedEvent(ToSnapshot())); // В идеале, вызывать только если с Publish не меняли
     }
 
     public void SubmitForModeration()
@@ -80,7 +90,7 @@ public class Ad : AggregateRoot
             throw new InvalidOperationException("Can't submit an ad that is not in Draft status.");
 
         Status = AdStatus.OnModeration;
-        RaiseDomainEvent(new AdSubmittedForModerationEvent(Id));
+        RaiseDomainEvent(new AdSubmittedForModerationEvent(ToSnapshot()));
     }
 
     public void Publish()
@@ -92,9 +102,9 @@ public class Ad : AggregateRoot
         RaiseDomainEvent(new AdPublishedEvent(Id));
     }
 
-    public void Reject(string reason)
+    public void Reject(string? reason)
     {
-        if(Status != AdStatus.OnModeration)
+        if(Status is not AdStatus.OnModeration and not AdStatus.Published)
             throw new InvalidOperationException("Can't reject an ad that is not in OnModeration status.");
 
         Status = AdStatus.Rejected;

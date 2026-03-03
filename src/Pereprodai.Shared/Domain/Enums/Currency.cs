@@ -1,4 +1,4 @@
-namespace Pereprodai.Catalog.Domain.Enums;
+namespace Pereprodai.Shared.Domain.Enums;
 
 public enum Currency
 {

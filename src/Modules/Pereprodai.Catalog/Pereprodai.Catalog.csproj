@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\Pereprodai.Shared\Pereprodai.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\Events\" />
+  </ItemGroup>
+
 </Project>

@@ -1,8 +1,9 @@
 using FluentAssertions;
 using Pereprodai.Catalog.Domain.Entities;
 using Pereprodai.Catalog.Domain.Enums;
-using Pereprodai.Catalog.Domain.Events;
 using Pereprodai.Catalog.Domain.ValueObjects;
+using Pereprodai.Shared.Domain.Enums;
+using Pereprodai.Shared.Domain.Events.Catalog;
 
 namespace Pereprodai.Catalog.UnitTests.Domain;
 
@@ -53,7 +54,7 @@ public class AdTests
         var domainEvent = ad.DomainEvents.Should().Contain(e => e is AdSubmittedForModerationEvent)
             .Which.Should().BeOfType<AdSubmittedForModerationEvent>().Subject;
 
-        domainEvent.AdId.Should().Be(ad.Id);
+        domainEvent.Snapshot.AdId.Should().Be(ad.Id);
     }
 
     [Fact]
@@ -197,7 +198,7 @@ public class AdTests
         var domainEvent = ad.DomainEvents.Should().Contain(e => e is AdUpdatedEvent)
             .Which.Should().BeOfType<AdUpdatedEvent>().Subject;
 
-        domainEvent.AdId.Should().Be(ad.Id);
+        domainEvent.Snapshot.AdId.Should().Be(ad.Id);
     }
     [Fact]
     public void Update_FromArchive_ShouldThrow()

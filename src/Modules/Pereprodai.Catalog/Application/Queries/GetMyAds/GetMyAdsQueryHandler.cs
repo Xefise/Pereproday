@@ -1,6 +1,7 @@
 using MediatR;
 using Pereprodai.Catalog.Application.DTOs;
 using Pereprodai.Catalog.Domain.Repositories;
+using Pereprodai.Shared.Application.DTOs;
 
 namespace Pereprodai.Catalog.Application.Queries.GetMyAds;
 

@@ -1,5 +1,5 @@
-using Pereprodai.Catalog.Domain.Enums;
 using Pereprodai.Shared.Application;
+using Pereprodai.Shared.Domain.Enums;
 
 namespace Pereprodai.Catalog.Application.Commands.UpdateAd;
 

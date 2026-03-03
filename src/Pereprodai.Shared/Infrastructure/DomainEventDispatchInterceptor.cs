@@ -1,10 +1,8 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Pereprodai.Shared.Domain;
 
-namespace Pereprodai.Catalog.Infrastructure;
+namespace Pereprodai.Shared.Infrastructure;
 
 public class DomainEventDispatchInterceptor : SaveChangesInterceptor
 {

@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules\Pereprodai.Catalog\Pereprodai.Catalog.csproj" />
+    <ProjectReference Include="..\Modules\Pereprodai.Moderation\Pereprodai.Moderation.csproj" />
   </ItemGroup>
 
 </Project>
