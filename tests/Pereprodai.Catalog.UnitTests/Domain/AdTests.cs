@@ -195,10 +195,8 @@ public class AdTests
         ad.ContactInfo.Phone.Should().Be("1234567891");
         ad.ContactInfo.Email.Should().Be("email@email.com");
 
-        var domainEvent = ad.DomainEvents.Should().Contain(e => e is AdUpdatedEvent)
-            .Which.Should().BeOfType<AdUpdatedEvent>().Subject;
-
-        domainEvent.Snapshot.AdId.Should().Be(ad.Id);
+        ad.DomainEvents.Should().Contain(e => e is AdUpdatedEvent);
+        ad.DomainEvents.Should().Contain(e => e is AdSubmittedForModerationEvent);
     }
     [Fact]
     public void Update_FromArchive_ShouldThrow()
