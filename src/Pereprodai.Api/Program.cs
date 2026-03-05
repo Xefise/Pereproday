@@ -20,7 +20,8 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("CatalogDb")!)
+    .AddNpgSql(builder.Configuration.GetConnectionString("CatalogDb")!, name: "catalog-db")
+    .AddNpgSql(builder.Configuration.GetConnectionString("ModerationDb")!, name: "moderation-db") // по приколу :)
     .AddRedis(builder.Configuration["Redis:ConnectionString"]!)
     .AddElasticsearch(builder.Configuration["Elasticsearch:Url"]!);
 
@@ -40,8 +41,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
+
     var dbContext = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
     await dbContext.Database.MigrateAsync();
+
+    var moderationDbContext = scope.ServiceProvider.GetRequiredService<ModerationDbContext>();
+    await moderationDbContext.Database.MigrateAsync();
 }
 
 // Middleware pipeline

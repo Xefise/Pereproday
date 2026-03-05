@@ -1,8 +1,8 @@
 using Pereprodai.Shared.Domain.Enums;
 
-namespace Pereprodai.Api.Requests;
+namespace Pereprodai.Api.Requests.Catalog;
 
-public record CreateAdRequest(
+public record UpdateAdRequest(
     string Title,
     string Description,
     string Category,

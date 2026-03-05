@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pereprodai.Api.Extensions;
 using Pereprodai.Api.Requests;
+using Pereprodai.Api.Requests.Catalog;
 using Pereprodai.Catalog.Application.Commands.ArchiveAd;
 using Pereprodai.Catalog.Application.Commands.CreateAd;
 using Pereprodai.Catalog.Application.Commands.SubmitForModeration;
