@@ -4,6 +4,8 @@ using Pereprodai.Catalog.Infrastructure;
 using Pereprodai.Moderation;
 using Pereprodai.Moderation.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Pereprodai.Search;
+using Pereprodai.Search.Infrastructure;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Modules
 builder.Services.AddCatalogModule(builder.Configuration);
 builder.Services.AddModerationModule(builder.Configuration);
+builder.Services.AddSearchModule(builder.Configuration);
 
 // Redis
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -47,6 +50,10 @@ if (app.Environment.IsDevelopment())
 
     var moderationDbContext = scope.ServiceProvider.GetRequiredService<ModerationDbContext>();
     await moderationDbContext.Database.MigrateAsync();
+
+
+    var searchService = scope.ServiceProvider.GetRequiredService<ElasticsearchService>();
+    await searchService.CreateIndexIfNotExistsAsync();
 }
 
 // Middleware pipeline

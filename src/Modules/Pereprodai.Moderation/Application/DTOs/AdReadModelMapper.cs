@@ -9,7 +9,7 @@ public static class AdReadModelMapper
     public static AdSnapshot ToSnapshot(AdReadModel ad)
     {
         return new AdSnapshot(ad.AdId, ad.UserId, ad.Title, ad.Description, ad.Category, ad.PriceAmount,
-            ad.PriceCurrency, ad.LocationCity, ad.ContactInfoPhone, ad.ContactInfoEmail);
+            ad.PriceCurrency, ad.LocationCity, ad.ContactInfoPhone, ad.ContactInfoEmail, null, null);
     }
 
     public static ModerationTaskResponse ToResponse(AdReadModel ad, ModerationTask moderationTask)

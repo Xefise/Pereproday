@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Pereprodai.Catalog\Pereprodai.Catalog.csproj" />
     <ProjectReference Include="..\Modules\Pereprodai.Moderation\Pereprodai.Moderation.csproj" />
+    <ProjectReference Include="..\Modules\Pereprodai.Search\Pereprodai.Search.csproj" />
   </ItemGroup>
 
 </Project>

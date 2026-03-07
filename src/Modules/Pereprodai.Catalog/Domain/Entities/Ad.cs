@@ -24,7 +24,7 @@ public class Ad : AggregateRoot
     public AdSnapshot ToSnapshot() => new(
         Id, UserId, Title, Description, Category,
         Price.Amount, Price.Currency,
-        Location.City, ContactInfo.Phone, ContactInfo.Email);
+        Location.City, ContactInfo.Phone, ContactInfo.Email, CreatedAt, UpdatedAt);
 
     public static Ad Create(
         Guid userId,
@@ -99,7 +99,7 @@ public class Ad : AggregateRoot
             throw new InvalidOperationException("Can't publish an ad that is not in OnModeration status.");
 
         Status = AdStatus.Published;
-        RaiseDomainEvent(new AdPublishedEvent(Id));
+        RaiseDomainEvent(new AdPublishedEvent(ToSnapshot()));
     }
 
     public void Reject(string? reason)

@@ -1,3 +1,5 @@
+using Pereprodai.Shared.Domain.Events.Catalog.Snapshots;
+
 namespace Pereprodai.Shared.Domain.Events.Catalog;
 
-public record AdPublishedEvent(Guid AdId) : IDomainEvent;
+public record AdPublishedEvent(AdSnapshot AdSnapshot) : IDomainEvent;

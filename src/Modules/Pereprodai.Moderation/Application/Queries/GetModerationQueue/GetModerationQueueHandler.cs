@@ -35,7 +35,7 @@ public class GetModerationQueueHandler : IRequestHandler<GetModerationQueue, Pag
                     task.ModeratorId, task.CreatedAt, task.ResolvedAt,
                     new AdSnapshot(ad.AdId, ad.UserId, ad.Title, ad.Description,
                         ad.Category, ad.PriceAmount, ad.PriceCurrency,
-                        ad.LocationCity, ad.ContactInfoPhone, ad.ContactInfoEmail)))
+                        ad.LocationCity, ad.ContactInfoPhone, ad.ContactInfoEmail, null, null)))
             .OrderBy(x => x.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)

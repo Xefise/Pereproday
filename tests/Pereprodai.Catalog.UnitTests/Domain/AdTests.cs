@@ -73,7 +73,7 @@ public class AdTests
         var domainEvent = ad.DomainEvents.Should().Contain(e => e is AdPublishedEvent)
             .Which.Should().BeOfType<AdPublishedEvent>().Subject;
 
-        domainEvent.AdId.Should().Be(ad.Id);
+        domainEvent.AdSnapshot.AdId.Should().Be(ad.Id);
     }
     [Fact]
     public void Publish_FromDraft_ShouldThrow()
