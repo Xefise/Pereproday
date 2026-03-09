@@ -22,13 +22,6 @@ public static class CatalogModuleRegistration
             options.AddInterceptors(sp.GetRequiredService<DomainEventDispatchInterceptor>());
         });
 
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(CatalogModuleRegistration).Assembly);
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        });
-
         services.AddValidatorsFromAssembly(typeof(CatalogModuleRegistration).Assembly);
 
         services.AddScoped<IAdRepository, AdRepository>();

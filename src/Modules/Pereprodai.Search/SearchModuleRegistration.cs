@@ -2,6 +2,7 @@ using Elastic.Clients.Elasticsearch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pereprodai.Search.Infrastructure;
+using Pereprodai.Shared.Application.Behaviors;
 
 namespace Pereprodai.Search;
 
@@ -16,11 +17,6 @@ public static class SearchModuleRegistration
         services.AddSingleton(elasticClients);
 
         services.AddScoped<IElasticsearchService, ElasticsearchService>();
-
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(SearchModuleRegistration).Assembly);
-        });
 
         return services;
     }

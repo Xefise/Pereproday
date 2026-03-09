@@ -6,7 +6,10 @@ using Pereprodai.Moderation.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Pereprodai.Search;
 using Pereprodai.Search.Infrastructure;
+using Pereprodai.Shared.Application.Behaviors;
+using Pereprodai.Shared.Infrastructure.Services.Cache;
 using Scalar.AspNetCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +18,29 @@ builder.Services.AddCatalogModule(builder.Configuration);
 builder.Services.AddModerationModule(builder.Configuration);
 builder.Services.AddSearchModule(builder.Configuration);
 
+var redisConnectionString = builder.Configuration["Redis:ConnectionString"]
+                            ?? throw new InvalidOperationException("Redis:ConnectionString not found in configuration");
+
 // Redis
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration["Redis:ConnectionString"];
+    options.Configuration = redisConnectionString;
+});
+
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
+builder.Services.AddSingleton<ICacheService, RedisCacheService>();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblies(
+        typeof(CatalogModuleRegistration).Assembly,
+        typeof(ModerationModuleRegistration).Assembly,
+        typeof(SearchModuleRegistration).Assembly
+    );
+    cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    cfg.AddOpenBehavior(typeof(CacheBehavior<,>));
 });
 
 // Health checks
@@ -40,7 +62,6 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
-// Auto-apply migrations in development
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -56,7 +77,7 @@ if (app.Environment.IsDevelopment())
     await searchService.CreateIndexIfNotExistsAsync();
 }
 
-// Middleware pipeline
+// Middlewares
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<FakeAuthMiddleware>();
 

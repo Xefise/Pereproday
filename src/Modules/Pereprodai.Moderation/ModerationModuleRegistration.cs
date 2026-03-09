@@ -23,13 +23,6 @@ public static class ModerationModuleRegistration
             options.AddInterceptors(sp.GetRequiredService<DomainEventDispatchInterceptor>());
         });
 
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(ModerationModuleRegistration).Assembly);
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        });
-
         services.AddValidatorsFromAssembly(typeof(ModerationModuleRegistration).Assembly);
 
         services.AddScoped<IModerationTaskRepository, ModerationTaskRepository>();
