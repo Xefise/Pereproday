@@ -1,12 +1,15 @@
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.IndexManagement;
 using Elastic.Clients.Elasticsearch.Mapping;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 using Microsoft.Extensions.Logging;
+using Pereprodai.Search.Application.Queries.SearchAds;
 using Pereprodai.Search.Documents;
+using Pereprodai.Shared.Application.DTOs;
 
 namespace Pereprodai.Search.Infrastructure;
 
-public class ElasticsearchService
+public class ElasticsearchService : IElasticsearchService
 {
     private readonly ElasticsearchClient _client;
     private readonly ILogger<ElasticsearchService> _logger;
@@ -16,6 +19,92 @@ public class ElasticsearchService
     {
         _client = client;
         _logger = logger;
+    }
+
+    public async Task<SearchResult> SearchAsync(SearchAdsQuery query, CancellationToken ct = default)
+    {
+        var filters = new List<Query>();
+
+        if (!string.IsNullOrWhiteSpace(query.Category))
+            filters.Add(new TermQuery(new Field("category")) { Value = query.Category });
+
+        if (!string.IsNullOrWhiteSpace(query.City))
+            filters.Add(new TermQuery(new Field("city")) { Value = query.City });
+
+        filters.Add(new TermQuery(new Field("currency")) { Value = query.Currency.ToString() });
+
+        if (query.PriceFrom.HasValue || query.PriceTo.HasValue)
+        {
+            filters.Add(new NumberRangeQuery(new Field("price")) // todo потом надо что-то делать с валютой
+            {
+                Gte = query.PriceFrom.HasValue ? (double)query.PriceFrom.Value : null,
+                Lte = query.PriceTo.HasValue ? (double)query.PriceTo.Value : null
+            });
+        }
+
+        var response = await _client.SearchAsync<AdSearchDocument>(s => s
+            .Index(IndexName)
+            .From((query.Page - 1) * query.PageSize)
+            .Size(query.PageSize)
+            .Query(q => q
+                .Bool(b =>
+                {
+                    if (!string.IsNullOrWhiteSpace(query.SearchString))
+                    {
+                        b.Must(m => m
+                            .MultiMatch(mm => mm
+                                .Query(query.SearchString)
+                                .Fields(new[] { "title^3", "description" }) // title x3
+                                .Fuzziness(new Fuzziness("AUTO"))          // опечатки
+                            )
+                        );
+                    }
+
+                    // Filter — фильтры без влияния на score
+                    if (filters.Count > 0)
+                        b.Filter(filters.ToArray());
+                })
+            )
+            .Sort(query.Sort switch
+            {
+                "price_asc" => so => so.Field(f => f.Price, new FieldSort { Order = SortOrder.Asc }),
+                "price_desc" => so => so.Field(f => f.Price, new FieldSort { Order = SortOrder.Desc }),
+                "date" => so => so.Field(f => f.UpdatedAt, new FieldSort { Order = SortOrder.Desc }),
+                _ => so => so.Field(f => f.UpdatedAt, new FieldSort { Order = SortOrder.Desc }),
+                //_ => so => so.Score(new ScoreSort { Order = SortOrder.Desc })
+            })
+            .Aggregations(agg => agg
+                .Add("categories", a => a
+                    .Terms(t => t
+                        .Field(f => f.Category)
+                        .Size(20)
+                    )
+                )
+            ), ct);
+
+        if (!response.IsValidResponse)
+        {
+            _logger.LogError("Search failed: {Error}", response.ElasticsearchServerError);
+            return new SearchResult(
+                new PagedResponse<AdSearchDocument>([], 0, query.Page, query.PageSize),
+                new Dictionary<string, long>());
+        }
+
+        var categoryFacets = new Dictionary<string, long>();
+        var categoriesAgg = response.Aggregations?.GetStringTerms("categories");
+        if (categoriesAgg != null)
+        {
+            foreach (var bucket in categoriesAgg.Buckets)
+                categoryFacets[bucket.Key.ToString()] = bucket.DocCount;
+        }
+
+        return new SearchResult(
+            new PagedResponse<AdSearchDocument>(
+                response.Documents.ToList(),
+                response.Total,
+                query.Page,
+                query.PageSize),
+            categoryFacets);
     }
 
     public async Task CreateIndexIfNotExistsAsync(CancellationToken ct = default)

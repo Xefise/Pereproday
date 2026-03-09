@@ -15,7 +15,7 @@ public static class SearchModuleRegistration
                         ?? throw new InvalidOperationException("Elasticsearch:Url not found in configuration"))));
         services.AddSingleton(elasticClients);
 
-        services.AddScoped<ElasticsearchService>();
+        services.AddScoped<IElasticsearchService, ElasticsearchService>();
 
         services.AddMediatR(cfg =>
         {

@@ -52,7 +52,7 @@ if (app.Environment.IsDevelopment())
     await moderationDbContext.Database.MigrateAsync();
 
 
-    var searchService = scope.ServiceProvider.GetRequiredService<ElasticsearchService>();
+    var searchService = scope.ServiceProvider.GetRequiredService<IElasticsearchService>();
     await searchService.CreateIndexIfNotExistsAsync();
 }
 

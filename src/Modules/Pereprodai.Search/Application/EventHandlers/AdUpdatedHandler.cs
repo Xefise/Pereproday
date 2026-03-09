@@ -6,9 +6,9 @@ namespace Pereprodai.Search.Application.EventHandlers;
 
 public class AdUpdatedHandler : INotificationHandler<AdUpdatedEvent>
 {
-    private readonly ElasticsearchService _elasticsearchService;
+    private readonly IElasticsearchService _elasticsearchService;
 
-    public AdUpdatedHandler(ElasticsearchService elasticsearchService)
+    public AdUpdatedHandler(IElasticsearchService elasticsearchService)
     {
         _elasticsearchService = elasticsearchService;
     }
