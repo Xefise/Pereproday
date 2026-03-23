@@ -9,4 +9,5 @@ public interface IElasticsearchService
     Task CreateIndexIfNotExistsAsync(CancellationToken ct = default);
     Task IndexDocumentAsync(AdSearchDocument document, CancellationToken ct = default);
     Task DeleteDocumentAsync(Guid id, CancellationToken ct = default);
+    Task RefreshIndexAsync(CancellationToken ct = default);
 }

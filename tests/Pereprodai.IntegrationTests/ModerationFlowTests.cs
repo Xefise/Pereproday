@@ -2,14 +2,11 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Pereprodai.Catalog.Application.Commands.CreateAd;
-using Pereprodai.Catalog.Application.Commands.SubmitForModeration;
 using Pereprodai.Catalog.Application.Commands.UpdateAd;
 using Pereprodai.Catalog.Application.Queries.GetMyAds;
 using Pereprodai.Catalog.Domain.Enums;
 using Pereprodai.Catalog.Infrastructure;
 using Pereprodai.IntegrationTests.Fixtures;
-using Pereprodai.Moderation.Application.Commands.ApproveModerationTask;
 using Pereprodai.Moderation.Application.Commands.RejectModerationTask;
 using Pereprodai.Moderation.Domain.Enums;
 using Pereprodai.Moderation.Infrastructure;
@@ -17,43 +14,16 @@ using Pereprodai.Shared.Domain.Enums;
 
 namespace Pereprodai.IntegrationTests;
 
-public class ModerationFlowTests : IClassFixture<IntegrationTestFixture>
+public class ModerationFlowTests : IntegrationTestBase
 {
-    private readonly IntegrationTestFixture _fixture;
-
-    public ModerationFlowTests(IntegrationTestFixture fixture)
-    {
-        _fixture = fixture;
-    }
-
-    private async Task<(IMediator mediator, CatalogDbContext catalogDb, ModerationDbContext moderationDb)> CreateScope()
-    {
-        var scope = _fixture.Services.CreateScope();
-        return (
-            scope.ServiceProvider.GetRequiredService<IMediator>(),
-            scope.ServiceProvider.GetRequiredService<CatalogDbContext>(),
-            scope.ServiceProvider.GetRequiredService<ModerationDbContext>()
-        );
-    }
-
-    private async Task<Guid> CreateDraftAd(IMediator mediator, Guid userId)
-    {
-        return await mediator.Send(new CreateAdCommand(userId, "Title", "Description", "Category",
-            100, Currency.RUB, "City", "+79871231212", "email@gmail.com"));
-    }
-
-    private async Task<Guid> SubmitAndApprove(IMediator mediator, ModerationDbContext moderationDb, Guid adId, Guid userId, Guid moderatorId)
-    {
-        await mediator.Send(new SubmitForModerationCommand(adId, userId));
-        var task = await moderationDb.ModerationTasks.FirstAsync(x => x.AdId == adId && x.Status == ModerationStatus.Pending);
-        await mediator.Send(new ApproveModerationTaskCommand(task.Id, moderatorId));
-        return task.Id;
-    }
+    public ModerationFlowTests(IntegrationTestFixture fixture) : base(fixture) { }
 
     [Fact]
     public async Task CreateAd_ShouldNotCreateModerationTask()
     {
-        var (mediator, catalogDb, moderationDb) = await CreateScope();
+        using var scope = CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var moderationDb = scope.ServiceProvider.GetRequiredService<ModerationDbContext>();
         var userId = Guid.NewGuid();
 
         var adId = await CreateDraftAd(mediator, userId);
@@ -65,12 +35,14 @@ public class ModerationFlowTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task SubmitAndApprove_ShouldPublishAd()
     {
-        var (mediator, catalogDb, moderationDb) = await CreateScope();
+        using var scope = CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var catalogDb = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
+        var moderationDb = scope.ServiceProvider.GetRequiredService<ModerationDbContext>();
         var userId = Guid.NewGuid();
         var moderatorId = Guid.NewGuid();
 
-        var adId = await CreateDraftAd(mediator, userId);
-        await SubmitAndApprove(mediator, moderationDb, adId, userId, moderatorId);
+        var adId = await CreateAndPublishAd(mediator, moderationDb, userId, moderatorId);
 
         var ad = await catalogDb.Ads.AsNoTracking().FirstAsync(x => x.Id == adId);
         ad.Status.Should().Be(AdStatus.Published);
@@ -79,12 +51,14 @@ public class ModerationFlowTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task UpdatePublished_ShouldCreateNewModerationTask()
     {
-        var (mediator, catalogDb, moderationDb) = await CreateScope();
+        using var scope = CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var catalogDb = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
+        var moderationDb = scope.ServiceProvider.GetRequiredService<ModerationDbContext>();
         var userId = Guid.NewGuid();
         var moderatorId = Guid.NewGuid();
 
-        var adId = await CreateDraftAd(mediator, userId);
-        await SubmitAndApprove(mediator, moderationDb, adId, userId, moderatorId);
+        var adId = await CreateAndPublishAd(mediator, moderationDb, userId, moderatorId);
 
         const string newTitle = "New Title";
         await mediator.Send(new UpdateAdCommand(adId, userId, newTitle, "New Description", "New Category",
@@ -106,12 +80,14 @@ public class ModerationFlowTests : IClassFixture<IntegrationTestFixture>
     [Fact]
     public async Task RejectAfterUpdate_ShouldRejectAd()
     {
-        var (mediator, catalogDb, moderationDb) = await CreateScope();
+        using var scope = CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var catalogDb = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
+        var moderationDb = scope.ServiceProvider.GetRequiredService<ModerationDbContext>();
         var userId = Guid.NewGuid();
         var moderatorId = Guid.NewGuid();
 
-        var adId = await CreateDraftAd(mediator, userId);
-        await SubmitAndApprove(mediator, moderationDb, adId, userId, moderatorId);
+        var adId = await CreateAndPublishAd(mediator, moderationDb, userId, moderatorId);
 
         await mediator.Send(new UpdateAdCommand(adId, userId, "Updated", "Desc", "Cat",
             100, Currency.RUB, "Ekb", "+1234567890", "email@gov.gov"));

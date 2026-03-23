@@ -165,9 +165,17 @@ public class ElasticsearchService : IElasticsearchService
 
     public async Task DeleteDocumentAsync(Guid id, CancellationToken ct = default)
     {
-        var response = await _client.DeleteAsync(IndexName, id, ct);
+        var response = await _client.DeleteAsync(new DeleteRequest(IndexName, id), ct);
 
         if (!response.IsValidResponse && response.Result != Result.NotFound)
             _logger.LogError("Failed to delete document {Id}: {Error}", id, response.ElasticsearchServerError);
+    }
+
+    public async Task RefreshIndexAsync(CancellationToken ct = default)
+    {
+        var response = await _client.Indices.RefreshAsync(IndexName, ct);
+
+        if (!response.IsValidResponse)
+            _logger.LogError("Failed to refresh index {Index}: {Error}", IndexName, response.ElasticsearchServerError);
     }
 }
