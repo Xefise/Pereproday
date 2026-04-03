@@ -16,4 +16,5 @@ public record AdResponse(
     string? Email,
     AdStatus Status,
     DateTime CreatedAt,
-    DateTime UpdatedAt);
+    DateTime UpdatedAt,
+    long Views);

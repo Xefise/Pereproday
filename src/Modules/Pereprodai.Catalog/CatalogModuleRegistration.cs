@@ -3,8 +3,10 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pereprodai.Catalog.Application.Services;
 using Pereprodai.Catalog.Domain.Repositories;
 using Pereprodai.Catalog.Infrastructure;
+using Pereprodai.Catalog.Infrastructure.Services;
 using Pereprodai.Shared.Application.Behaviors;
 using Pereprodai.Shared.Infrastructure;
 
@@ -25,6 +27,7 @@ public static class CatalogModuleRegistration
         services.AddValidatorsFromAssembly(typeof(CatalogModuleRegistration).Assembly);
 
         services.AddScoped<IAdRepository, AdRepository>();
+        services.AddScoped<IViewCountService, ViewCountService>();
 
         return services;
     }

@@ -11,4 +11,5 @@ public record AdListItemResponse(
     Currency PriceCurrency,
     string City,
     AdStatus Status,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    long Views);

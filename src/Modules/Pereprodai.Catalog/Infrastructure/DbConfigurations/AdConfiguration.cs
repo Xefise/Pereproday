@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Pereprodai.Catalog.Domain.Entities;
-using Pereprodai.Catalog.Domain.Enums;
 
-namespace Pereprodai.Catalog.Infrastructure;
+namespace Pereprodai.Catalog.Infrastructure.DbConfigurations;
 
 public class AdConfiguration : IEntityTypeConfiguration<Ad>
 {

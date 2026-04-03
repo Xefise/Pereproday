@@ -10,6 +10,7 @@ using Pereprodai.Catalog.Application.Commands.UpdateAd;
 using Pereprodai.Catalog.Application.DTOs;
 using Pereprodai.Catalog.Application.Queries.GetAd;
 using Pereprodai.Catalog.Application.Queries.GetMyAds;
+using Pereprodai.Catalog.Application.Services;
 using Pereprodai.Catalog.Domain.Enums;
 using Pereprodai.Shared.Application.DTOs;
 
@@ -20,10 +21,12 @@ namespace Pereprodai.Api.Controllers;
 public class ListingsController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IViewCountService _viewCountService;
 
-    public ListingsController(IMediator mediator)
+    public ListingsController(IMediator mediator, IViewCountService viewCountService)
     {
         _mediator = mediator;
+        _viewCountService = viewCountService;
     }
 
     [HttpPost]
@@ -68,6 +71,10 @@ public class ListingsController : ControllerBase
         var optionalUserId = User.GetOptionalUserId();
         var query = new GetAdQuery(id, optionalUserId);
         var result = await _mediator.Send(query, ct);
+
+        if (result.Status == AdStatus.Published && result.UserId != optionalUserId)
+            await _viewCountService.IncrementViewCountAsync(id);
+
         return Ok(result);
     }
 

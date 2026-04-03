@@ -4,6 +4,7 @@ using Pereprodai.Catalog.Infrastructure;
 using Pereprodai.Moderation;
 using Pereprodai.Moderation.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Pereprodai.Api.HostedServices;
 using Pereprodai.Search;
 using Pereprodai.Search.Infrastructure;
 using Pereprodai.Shared.Application.Behaviors;
@@ -30,6 +31,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 builder.Services.AddSingleton<ICacheService, RedisCacheService>();
+builder.Services.AddSingleton<ViewCountFlushService>();
 
 builder.Services.AddMediatR(cfg =>
 {
