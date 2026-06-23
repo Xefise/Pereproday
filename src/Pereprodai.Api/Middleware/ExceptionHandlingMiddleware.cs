@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FluentValidation;
+using Pereprodai.Shared.Application.Exceptions;
 
 namespace Pereprodai.Api.Middleware;
 
@@ -40,6 +41,14 @@ public class ExceptionHandlingMiddleware
         {
             context.Response.StatusCode = 409;
         }
+        catch (RateLimitExceededException ex)
+        {
+            context.Response.StatusCode = 429;
+            _logger.LogInformation(ex, "RateLimitExceededException");
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(JsonSerializer.Serialize(
+                new RateLimitErrorResponse(ex.Message, ex.Limit, (int)ex.Window.TotalSeconds)));
+        }
         catch (Exception ex)
         {
             context.Response.StatusCode = 500;
@@ -50,3 +59,5 @@ public class ExceptionHandlingMiddleware
 
 public record ErrorResponse(string Message, ValidationError[]? Errors = null);
 public record ValidationError(string Property, string Error);
+
+public record RateLimitErrorResponse(string Message, int Limit, int WindowSeconds);

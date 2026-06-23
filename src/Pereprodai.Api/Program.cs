@@ -42,6 +42,7 @@ builder.Services.AddMediatR(cfg =>
     );
     cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
     cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    cfg.AddOpenBehavior(typeof(RateLimitingBehavior<,>));
     cfg.AddOpenBehavior(typeof(CacheBehavior<,>));
 });
 

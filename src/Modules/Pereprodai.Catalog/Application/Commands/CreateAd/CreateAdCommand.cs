@@ -12,4 +12,9 @@ public record CreateAdCommand(
     Currency PriceCurrency,
     string City,
     string Phone,
-    string? Email) : ICommand<Guid>;
+    string? Email) : ICommand<Guid>, IRateLimited
+{
+    public int Limit => 20;
+    public TimeSpan Window => TimeSpan.FromDays(1);
+    public string RateLimitKey => $"create-ad:{UserId}";
+}
